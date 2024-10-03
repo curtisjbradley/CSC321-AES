@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "box.h"
 #include "aes.h"
+#include <stdint.h>
 
 #define BLOCK_SIZE 16
 #define ROUNDS 10
@@ -12,6 +13,7 @@
 char* encrypt(char* data, char* key){
 	char* state = calloc(BLOCK_SIZE, 1);
 	char i;
+	uint32_t *expansion = key_expansion(key);
 	//KeyExpansion(key)
 	for (i = 0; i < BLOCK_SIZE; i++) {
 		state[i] = data[i];
@@ -70,3 +72,29 @@ void mix_cols(char *data) {
 		data[4 * i + 3] = (3 * r4) ^ r2 ^ r3 ^ (2 * r4);
 	}
 }
+
+
+uint32_t *key_expansion(char *key) {
+	char i = 0;
+	uint32_t *key_schedule = (uint32_t*) calloc(4,sizeof(uint32_t));
+	for ( i = 0; i <= BLOCK_SIZE; i++) {
+		key_schedule[i] = key[4 * i] + key[4 * i + 1] << 8 + key[4* i + 2] << 16 + key[4 * i * 3] << 24;
+	}
+	for (i = 4; i <= (4 * ROUNDS + 3); i++) {
+		uint32_t temp = key_schedule[i-1];
+		if ((i % 4) == 0) {
+			temp = sub_word(rot_word(temp)) ^ (1 << i/4);
+		}
+		key_schedule[i] = key_schedule[i- 4] ^ temp;
+	}
+	return key_schedule;
+
+}
+
+uint32_t rot_word(uint32_t word) {
+	char first = (char) word | 0xff;
+	return (word >> 8) | (first << 24);
+
+}
+
+void add_roundkey(
