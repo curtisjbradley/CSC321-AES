@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include "main.h"
 
-
 #define ECB 0x01
 #define CBC 0x02
 #define IS_ECB(F) ((F | ECB) != 0)
@@ -33,6 +32,7 @@ int main(int argc, char* argp[]){
 		return -1;
 	}
 	generate_key(16);
+
 }
 
 char* generate_key(int byte_len) {

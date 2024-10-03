@@ -1,6 +1,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "box.h"
+#include "aes.h"
 
 #define BLOCK_SIZE 16
 #define ROUNDS 10
@@ -16,15 +18,23 @@ char* encrypt(char* data, char* key){
 	}
 	// state = addroundkey(state, keyexpansion[0...3]
 	for (i = 0; i < ROUNDS - 2; i++) {
-		//SubBytes(state)
+		sub_bytes(state);
 		//ShiftRows(state)
 		//MixColumns(state)
 		// addrounkey(state, keyexpansion[4*i...(4*i) + 3]
 	}
-	//SubBytes(state)
+	sub_bytes(state);
 	//ShiftRows(state)
 	//AddRoundKey(state, Keyexpansion[4*ROUNDS, 4*Rounds + 1 ... 4* Rounds + 3]
 	
 
 	return state;
+}
+
+void sub_bytes(char* data) {
+	char i;
+	for (i = 0; i < BLOCK_SIZE; i++) {
+		data[i] = s_box_lookup(data[i]);
+	}
+
 }
