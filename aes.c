@@ -19,12 +19,12 @@ char* encrypt(char* data, char* key){
 	// state = addroundkey(state, keyexpansion[0...3]
 	for (i = 0; i < ROUNDS - 2; i++) {
 		sub_bytes(state);
-		//ShiftRows(state)
+		shift_rows(state);
 		//MixColumns(state)
 		// addrounkey(state, keyexpansion[4*i...(4*i) + 3]
 	}
 	sub_bytes(state);
-	//ShiftRows(state)
+	shift_rows(state);
 	//AddRoundKey(state, Keyexpansion[4*ROUNDS, 4*Rounds + 1 ... 4* Rounds + 3]
 	
 
@@ -37,4 +37,20 @@ void sub_bytes(char* data) {
 		data[i] = s_box_lookup(data[i]);
 	}
 
+}
+
+void shift_rows(char *data) {
+	char temp[4] = {0,0,0,0};
+	char i;
+	for (i = 0; i < 4; i++) {
+		temp[0] = data[i];
+		temp[1] = data[(i + 1) % 4];
+		temp[2] = data[(i + 2) % 4];
+		temp[3] = data[(i + 3) % 4];
+		char j;
+
+		for (j = 0; j < 3; j++) {
+			data[(i* 4) + j] = temp[j];
+		}
+	}
 }
