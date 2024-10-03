@@ -35,16 +35,15 @@ int main(int argc, char* argp[]){
 	generate_key(16);
 }
 
-char* generate_key(int len) {
+char* generate_key(int byte_len) {
 
-	char *key = calloc(len, 1);
+	char *key = calloc(byte_len, 1);
 	
 	char i;
 	srand(time(NULL));
-	for (i = 0; i < len; i++) {
-		char c = rand() % 16;
+	for (i = 0; i < byte_len; i++) {
+		char c = (rand() % 256);
 		key[i] = c;
-		printf("%x", c);
 	}
 	return key;
 }
