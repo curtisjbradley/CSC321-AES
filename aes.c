@@ -20,7 +20,7 @@ char* encrypt(char* data, char* key){
 	for (i = 0; i < ROUNDS - 2; i++) {
 		sub_bytes(state);
 		shift_rows(state);
-		//MixColumns(state)
+		mix_cols(state);
 		// addrounkey(state, keyexpansion[4*i...(4*i) + 3]
 	}
 	sub_bytes(state);
@@ -52,5 +52,21 @@ void shift_rows(char *data) {
 		for (j = 0; j < 3; j++) {
 			data[(i* 4) + j] = temp[j];
 		}
+	}
+}
+
+void mix_cols(char *data) {
+	char i;
+
+	for (i = 0; i < 4; i++) {
+		char r1 = data[4 * i];
+		char r2 = data[4 * i + 1];
+		char r3 = data[4 * i + 2];
+		char r4 = data[4 * i + 3];
+		
+		data[4 * i] = (2 * r1) ^ (3 * r2) ^ r3 ^ r4;
+		data[4 * i + 1] = r1 ^ (2 * r2) ^ (3 * r3) ^ r4;
+		data[4 * i + 2] = r1 ^ r2 ^ (2 * r3) ^ (3 * r4);
+		data[4 * i + 3] = (3 * r4) ^ r2 ^ r3 ^ (2 * r4);
 	}
 }
