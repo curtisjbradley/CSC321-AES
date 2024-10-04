@@ -3,6 +3,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include "main.h"
+#include "aes.h"
 
 #define ECB 0x01
 #define CBC 0x02
@@ -31,7 +32,18 @@ int main(int argc, char* argp[]){
 		printf("Invalid encryption type: %s\n", argp[2]);
 		return -1;
 	}
-	generate_key(16);
+	//char *key = generate_key(16);
+	char key[] = {0x2b, 0x7e, 0x15, 0x16, 0x28, 0xae, 0xd2, 0xa6, 0xab, 0xf7, 0x15, 0x88, 0x09, 0xcf, 0x4f, 0x3c};
+	for (int i = 0; i < 16; i++) {
+		printf("%02x", key[i]);
+	}
+	printf("\n");
+	
+	uint32_t *schedule = key_expansion(key);
+	
+	for (int i = 0; i < 44; i++) {
+		printf("%08x\n", schedule[i]);
+	}	
 
 }
 

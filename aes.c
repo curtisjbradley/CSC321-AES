@@ -10,6 +10,10 @@
 
 // Source: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197-upd1.pdf
 // AES-128 does 10 rounds
+
+
+char rcon[] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36};
+
 char* encrypt(char* data, char* key){
 	char* state = calloc(BLOCK_SIZE, 1);
 	char i;
@@ -45,13 +49,13 @@ void shift_rows(char *data) {
 	char temp[4] = {0,0,0,0};
 	char i;
 	for (i = 0; i < 4; i++) {
-		temp[0] = data[i];
-		temp[1] = data[(i + 1) % 4];
-		temp[2] = data[(i + 2) % 4];
-		temp[3] = data[(i + 3) % 4];
+		temp[0] = data[(4 * i) + ( i % 4)];
+		temp[1] = data[(4 * i) + ((1 - i) % 4)];
+		temp[2] = data[(4 * i) + ((2 - i) % 4)];
+		temp[3] = data[(4 * i) + ((3 - i) % 4)];
 		char j;
 
-		for (j = 0; j < 3; j++) {
+		for (j = 0; j < 4; j++) {
 			data[(i* 4) + j] = temp[j];
 		}
 	}
@@ -76,14 +80,15 @@ void mix_cols(char *data) {
 
 uint32_t *key_expansion(char *key) {
 	char i = 0;
-	uint32_t *key_schedule = (uint32_t*) calloc(4,sizeof(uint32_t));
+	uint32_t *key_schedule = (uint32_t*) calloc(44,sizeof(uint32_t));
 	for ( i = 0; i <= BLOCK_SIZE; i++) {
-		key_schedule[i] = key[4 * i] + key[4 * i + 1] << 8 + key[4* i + 2] << 16 + key[4 * i * 3] << 24;
+		key_schedule[i] = (key[4 * i + 3]) | (key[4 * i + 2] << 8) | (key[4* i + 1] << 16) | (key[4 * i + 0] << 24);
 	}
 	for (i = 4; i <= (4 * ROUNDS + 3); i++) {
 		uint32_t temp = key_schedule[i-1];
 		if ((i % 4) == 0) {
-			temp = sub_word(rot_word(temp)) ^ (1 << i/4);
+			temp = sub_word(rot_word(temp));
+			temp ^=  rcon[(i/4) - 1] << 24;
 		}
 		key_schedule[i] = key_schedule[i- 4] ^ temp;
 	}
@@ -92,9 +97,12 @@ uint32_t *key_expansion(char *key) {
 }
 
 uint32_t rot_word(uint32_t word) {
-	char first = (char) word | 0xff;
-	return (word >> 8) | (first << 24);
+	char first = (char) ((word & 0xff000000) >> 24 );
+       	uint32_t out =	(word << 8) | (first);
+	return out;
 
 }
 
-void add_roundkey(
+void add_roundkey() {
+
+}
