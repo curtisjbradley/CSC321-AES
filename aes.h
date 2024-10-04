@@ -2,11 +2,11 @@
 
 #ifndef AES_H
 #define AES_H
-char* encrypt(char* data, char* key);
-void sub_bytes(char *data);
-void shift_rows(char *data);
-void mix_cols(char *data);
+unsigned char* encrypt(unsigned char* data, unsigned char* key);
+void sub_bytes(unsigned char *data);
+void shift_rows(unsigned char *data);
+void mix_cols(unsigned char *data);
 uint32_t rot_word(uint32_t word);
-uint32_t *key_expansion(char* key);
-void add_round_key(char *data, uint32_t *key_schedule);
+uint32_t *key_expansion(unsigned char* key);
+void add_round_key(unsigned char *data, uint32_t *key_schedule);
 #endif

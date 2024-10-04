@@ -12,11 +12,11 @@
 // AES-128 does 10 rounds
 
 
-char rcon[] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36};
+const unsigned char rcon[] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36};
 //Round Constant
 
 
-char* encrypt(char* data, char* key){
+unsigned char* encrypt(unsigned char* data, unsigned char* key){
 	char* state = calloc(BLOCK_SIZE, 1);
 	char i;
 	uint32_t *expansion = key_expansion(key);
@@ -40,7 +40,7 @@ char* encrypt(char* data, char* key){
 	return state;
 }
 
-void sub_bytes(char* data) {
+void sub_bytes(unsigned char* data) {
 	char i;
 	for (i = 0; i < BLOCK_SIZE; i++) {
 		data[i] = s_box_lookup(data[i]);
@@ -48,7 +48,7 @@ void sub_bytes(char* data) {
 
 }
 
-void shift_rows(char *data) {
+void shift_rows(unsigned char *data) {
 	char temp[4] = {0,0,0,0};
 	char i;
 	for (i = 0; i < 4; i++) {
@@ -64,7 +64,7 @@ void shift_rows(char *data) {
 	}
 }
 
-void mix_cols(char *data) {
+void mix_cols(unsigned char *data) {
 	char i;
 
 	for (i = 0; i < 4; i++) {
@@ -81,7 +81,7 @@ void mix_cols(char *data) {
 }
 
 
-uint32_t *key_expansion(char *key) {
+uint32_t *key_expansion(unsigned char *key) {
 	char i = 0;
 	uint32_t *key_schedule = (uint32_t*) calloc(44,sizeof(uint32_t));
 	for ( i = 0; i <= BLOCK_SIZE; i++) {
@@ -100,13 +100,13 @@ uint32_t *key_expansion(char *key) {
 }
 
 uint32_t rot_word(uint32_t word) {
-	char first = (char) ((word & 0xff000000) >> 24 );
+	unsigned char first = (unsigned char) ((word & 0xff000000) >> 24 );
        	uint32_t out =	(word << 8) | (first);
 	return out;
 
 }
 
-void add_round_key(char *data, uint32_t *keyschedule) {
+void add_round_key(unsigned char *data, uint32_t *keyschedule) {
 	 for (int i = 0; i < 16; i++) {
                 printf("%02x", data[i]);
         }
