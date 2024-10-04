@@ -47,6 +47,8 @@ int main(int argc, char* argp[]){
 	}
 	printf("\n Final");	
 
+	free(out);
+
 }
 
 char* generate_key(int byte_len) {

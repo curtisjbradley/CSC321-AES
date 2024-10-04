@@ -35,6 +35,8 @@ char* encrypt(char* data, char* key){
 	shift_rows(state);
 	add_round_key(state, expansion + ROUNDS);
 
+	free(expansion);
+
 	return state;
 }
 
