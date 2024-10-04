@@ -44,7 +44,8 @@ int main(int argc, char* argp[]){
 
 	for (int i = 0; i < 16; i++) {
 		printf("%02x", out[i]);
-	}	
+	}
+	printf("\n Final");	
 
 }
 
