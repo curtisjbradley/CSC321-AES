@@ -13,26 +13,27 @@
 
 
 char rcon[] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36};
+//Round Constant
+
 
 char* encrypt(char* data, char* key){
 	char* state = calloc(BLOCK_SIZE, 1);
 	char i;
 	uint32_t *expansion = key_expansion(key);
-	//KeyExpansion(key)
 	for (i = 0; i < BLOCK_SIZE; i++) {
 		state[i] = data[i];
 	}
-	// state = addroundkey(state, keyexpansion[0...3]
-	for (i = 0; i < ROUNDS - 2; i++) {
+
+	add_round_key(state, expansion);
+	for (i = 0; i < ROUNDS - 1; i++) {
 		sub_bytes(state);
 		shift_rows(state);
 		mix_cols(state);
-		// addrounkey(state, keyexpansion[4*i...(4*i) + 3]
+		add_round_key(state, expansion + (4 * i));
 	}
 	sub_bytes(state);
 	shift_rows(state);
-	//AddRoundKey(state, Keyexpansion[4*ROUNDS, 4*Rounds + 1 ... 4* Rounds + 3]
-	
+	add_round_key(state, expansion + ROUNDS);
 
 	return state;
 }
@@ -103,6 +104,21 @@ uint32_t rot_word(uint32_t word) {
 
 }
 
-void add_roundkey() {
+void add_round_key(char *data, uint32_t *keyschedule) {
+	 for (int i = 0; i < 16; i++) {
+                printf("%02x", data[i]);
+        }
+        printf(" Pre\n");	
+	for (int i = 0; i < 4; i++) {
+		uint32_t word = keyschedule[i];
+		for (int j = 0; j < 4; j++) {
+			data[4 * i + j] = data[4 * i + j] ^ (((word & ((0xff) << ((3-i) * 8))) >> ((3-i) * 8))); 
+		}
+
+	}
+	for (int i = 0; i < 16; i++) {
+		printf("%02x", data[i]);
+	}
+	printf(" Post\n");
 
 }

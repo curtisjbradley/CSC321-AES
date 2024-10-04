@@ -38,11 +38,12 @@ int main(int argc, char* argp[]){
 		printf("%02x", key[i]);
 	}
 	printf("\n");
-	
-	uint32_t *schedule = key_expansion(key);
-	
-	for (int i = 0; i < 44; i++) {
-		printf("%08x\n", schedule[i]);
+
+	char message[] = {0x32, 0x43, 0xf6, 0xa8, 0x88, 0x5a, 0x30, 0x8d, 0x31, 0x31, 0x98, 0xa2, 0xe0, 0x37, 0x07, 0x34};
+	char *out = encrypt(message,key);
+
+	for (int i = 0; i < 16; i++) {
+		printf("%02x", out[i]);
 	}	
 
 }
