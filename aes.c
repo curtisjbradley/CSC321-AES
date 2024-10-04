@@ -25,11 +25,16 @@ unsigned char* encrypt(unsigned char* data, unsigned char* key){
 	}
 
 	add_round_key(state, expansion);
+	print_data(state, "Round 1");
 	for (i = 0; i < ROUNDS - 1; i++) {
 		sub_bytes(state);
+		print_data(state, "Byte Sub");
 		shift_rows(state);
+		print_data(state, "Row Shift");
 		mix_cols(state);
+		print_data(state, "Col Mix");
 		add_round_key(state, expansion + (4 * i));
+		print_data(state, "Added Round Key");
 	}
 	sub_bytes(state);
 	shift_rows(state);
@@ -107,20 +112,18 @@ uint32_t rot_word(uint32_t word) {
 }
 
 void add_round_key(unsigned char *data, uint32_t *keyschedule) {
-	 for (int i = 0; i < 16; i++) {
-                printf("%02x", data[i]);
-        }
-        printf(" Pre\n");	
 	for (int i = 0; i < 4; i++) {
 		uint32_t word = keyschedule[i];
 		for (int j = 0; j < 4; j++) {
-			data[4 * i + j] = data[4 * i + j] ^ (((word & ((0xff) << ((3-i) * 8))) >> ((3-i) * 8))); 
+			data[4 * i + j] = data[4 * i + j] ^ (((word & ((0xff) << ((3-j) * 8))) >> ((3-j) * 8))); 
 		}
-
 	}
+}
+
+void print_data(unsigned char *data, char *message) {
 	for (int i = 0; i < 16; i++) {
 		printf("%02x", data[i]);
 	}
-	printf(" Post\n");
 
+	printf(" - %s\n", message);
 }
