@@ -43,6 +43,8 @@ int main(int argc, char* argp[]){
 
 	free(out);
 
+	printf("%02x\n", gf_mul(0x57, 0x13));
+
 }
 
 unsigned char* generate_key(int byte_len) {
