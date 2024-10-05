@@ -7,8 +7,8 @@
 
 #define ECB 0x01
 #define CBC 0x02
-#define IS_ECB(F) ((F | ECB) != 0)
-#define IS_CBC(F) ((F | CBC) != 0)
+#define IS_ECB(F) ((F & ECB) != 0)
+#define IS_CBC(F) ((F & CBC) != 0)
 
 int main(int argc, char* argp[]){
 	if (argc < 3 || argp[2][0] != '-') {
@@ -16,6 +16,7 @@ int main(int argc, char* argp[]){
 	       return -1;	
 	}
 	FILE* data = fopen(argp[1], "r");
+	FILE* output;
 	char type = 0;
 
 	if (data == NULL){
@@ -25,22 +26,57 @@ int main(int argc, char* argp[]){
 	if (strcmp(argp[2], "-e") == 0) {
 		type = ECB;
 	}
-	if (strcmp(argp[2], "-c") == 0) {
+	else if (strcmp(argp[2], "-c") == 0) {
 		type = CBC;
 	}
 	if (type == 0) {
 		printf("Invalid encryption type: %s\n", argp[2]);
 		return -1;
 	}
+	char *out_path;
+	if (argc > 3) {
+		out_path = argp[3];
+	} else {
+		out_path = "output";
+	}
+	output = fopen(out_path, "w");
+	if (output == NULL) {
+		printf("Cannot open %s\n", out_path);
+	}
 	unsigned char *key = generate_key(16);
 	print_data(key, "Key");
-	unsigned char *message = generate_key(16);
-	print_data(message, "Message");
-	unsigned char *out = encrypt(message,key);
+	unsigned char *iv = NULL;
+	if (IS_CBC(type)) {
+		iv = generate_key(16);
+		print_data(iv, "IV");
+	}
+	unsigned char *block = calloc(16,1);
+	char read_size = 0;
+	while ((read_size = fread(block, 1, 16, data)) > 0) {	
+		for (char i = 0; i < (16 - read_size); i++) {
+			block[15-i] = (16 -read_size);
+		}
+		print_data(block, "Message");
 
-	print_data(out, "Encrypted Text");
+		if (IS_CBC(type)) {
+			for(char i = 0; i < 16; i++) {
+				block[i] ^= iv[i];
+			}
+		}
+		unsigned char *out = encrypt(block,key);
+		print_data(out, "Encrypted Text");
+		fwrite(out, 1, 16, output);
 
-	free(out);
+		if (IS_CBC(type)) {
+			for (char i = 0; i < 16; i++) {
+				iv[i] = out[i];
+			}
+		}
+		free(out);
+
+	}
+	fclose(output);
+	fclose(data);
 
 }
 
