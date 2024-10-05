@@ -107,7 +107,7 @@ void mix_cols(unsigned char *data) {
 uint32_t *key_expansion(unsigned char *key) {
 	char i = 0;
 	uint32_t *key_schedule = (uint32_t*) calloc(44,sizeof(uint32_t));
-	for ( i = 0; i <= BLOCK_SIZE; i++) {
+	for ( i = 0; i < 4; i++) {
 		key_schedule[i] = (key[4 * i + 3]) | (key[4 * i + 2] << 8) | (key[4* i + 1] << 16) | (key[4 * i + 0] << 24);
 	}
 	for (i = 4; i <= (4 * ROUNDS + 3); i++) {

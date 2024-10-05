@@ -52,11 +52,14 @@ int main(int argc, char* argp[]){
 	}
 	unsigned char *block = calloc(16,1);
 	char read_size = 0;
+	char *header = malloc(54);
+	fread(header,1, 54, data);
+	fwrite(header, 1, 54, output);
+	free(header);
 	while ((read_size = fread(block, 1, 16, data)) > 0) {	
 		for (char i = 0; i < (16 - read_size); i++) {
 			block[15-i] = (16 -read_size);
 		}
-		print_data(block, "Message");
 
 		if (IS_CBC(type)) {
 			for(char i = 0; i < 16; i++) {
@@ -64,7 +67,6 @@ int main(int argc, char* argp[]){
 			}
 		}
 		unsigned char *out = encrypt(block,key);
-		print_data(out, "Encrypted Text");
 		fwrite(out, 1, 16, output);
 
 		if (IS_CBC(type)) {
@@ -77,6 +79,8 @@ int main(int argc, char* argp[]){
 	}
 	fclose(output);
 	fclose(data);
+	
+	printf("Saved to %s\n", out_path);
 
 }
 
