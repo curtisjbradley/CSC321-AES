@@ -32,18 +32,15 @@ int main(int argc, char* argp[]){
 		printf("Invalid encryption type: %s\n", argp[2]);
 		return -1;
 	}
-	//char *key = generate_key(16);
-	unsigned char key[] = {0x2b, 0x7e, 0x15, 0x16, 0x28, 0xae, 0xd2, 0xa6, 0xab, 0xf7, 0x15, 0x88, 0x09, 0xcf, 0x4f, 0x3c};
+	unsigned char *key = generate_key(16);
 	print_data(key, "Key");
-	unsigned char message[] = {0x32, 0x43, 0xf6, 0xa8, 0x88, 0x5a, 0x30, 0x8d, 0x31, 0x31, 0x98, 0xa2, 0xe0, 0x37, 0x07, 0x34};
+	unsigned char *message = generate_key(16);
 	print_data(message, "Message");
 	unsigned char *out = encrypt(message,key);
 
 	print_data(out, "Encrypted Text");
 
 	free(out);
-
-	printf("%02x\n", gf_mul(0x57, 0x13));
 
 }
 

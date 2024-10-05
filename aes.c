@@ -23,25 +23,15 @@ unsigned char* encrypt(unsigned char* data, unsigned char* key){
 	for (i = 0; i < BLOCK_SIZE; i++) {
 		state[i] = data[i];
 	}
-	for (int i = 0; i < 44; i++) {
-		printf("%08x - %d\n", expansion[i], i);
-	}
 	add_round_key(state, expansion);
 	for (i = 1; i < ROUNDS; i++) {
-		printf("Round %d\n", i);
 		sub_bytes(state);
-		print_data(state, "Byte Sub");
 		shift_rows(state);
-		print_data(state, "Row Shift");
 		mix_cols(state);
-		print_data(state, "Col Mix");
 		add_round_key(state, expansion + (4 * i));
-		print_data(state, "Added Round Key");
 	}
 	sub_bytes(state);
-	print_data(state, "Subbed Bytes");
 	shift_rows(state);
-	print_data(state, "Shift Row");
 	add_round_key(state, expansion + (4*ROUNDS));
 
 	free(expansion);
