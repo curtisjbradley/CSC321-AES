@@ -68,18 +68,18 @@ void sub_bytes(unsigned char* data) {
  */
 
 void shift_rows(unsigned char *data) {
-	char *temp = malloc(16);
-	char i;
+	char temp[] = {0,0,0,0};
 
-	for (i = 4; i < 16; i++) {
-		//rotate i % 4
+	for (char r = 1; r < 4; r++) {
+		for (char c = 0; c < 4; c++) {
+			temp[c] = data[((c+r) % 4) * 4 +r];
+		}
+		for (char c = 0; c < 4; c++) {
+			data[4*c + r] = temp[c];
+		}
 		
 	}
-	for (char i = 0; i < 16; i++) {
-		data[i] = temp[i];
-	}
 
-	free(temp);
 }
 
 void mix_cols(unsigned char *data) {
