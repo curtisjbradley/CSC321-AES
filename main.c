@@ -51,11 +51,7 @@ int main(int argc, char* argp[]){
 		print_data(iv, "IV");
 	}
 	unsigned char *block = calloc(16,1);
-	char read_size = 0;
-	char *header = malloc(54);
-	fread(header,1, 54, data);
-	fwrite(header, 1, 54, output);
-	free(header);
+	char read_size;	
 	while ((read_size = fread(block, 1, 16, data)) > 0) {	
 		for (char i = 0; i < (16 - read_size); i++) {
 			block[15-i] = (16 -read_size);
