@@ -4,6 +4,7 @@
 #include "box.h"
 #include "aes.h"
 #include <stdint.h>
+#include <time.h>
 
 #define BLOCK_SIZE 16
 #define ROUNDS 10
@@ -145,4 +146,17 @@ void print_data(unsigned char *data, char *message) {
 	}
 
 	printf(" - %s\n", message);
+}
+
+unsigned char* generate_key(int byte_len) {
+
+        char *key = calloc(byte_len, 1);
+
+        char i;
+        srand(time(NULL));
+        for (i = 0; i < byte_len; i++) {
+                char c = (rand() % 256);
+                key[i] = c;
+        }
+        return key;
 }

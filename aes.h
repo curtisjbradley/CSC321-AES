@@ -11,4 +11,5 @@ uint32_t *key_expansion(unsigned char* key);
 void add_round_key(unsigned char *data, uint32_t *key_schedule);
 void print_data(unsigned char *data, char *message);
 unsigned char gf_mul(unsigned char a, unsigned char b);
+unsigned char* generate_key();
 #endif

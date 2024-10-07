@@ -2,7 +2,7 @@
 #include <string.h>
 #include <time.h>
 #include <stdlib.h>
-#include "main.h"
+#include "bmp.h"
 #include "aes.h"
 
 #define ECB 0x01
@@ -50,6 +50,12 @@ int main(int argc, char* argp[]){
 		iv = generate_key(16);
 		print_data(iv, "IV");
 	}
+
+	char *header = malloc(54); //BMP header
+	fread(header, 1, 54, data);
+	fwrite(header, 1, 54, output);
+	free(header);
+
 	unsigned char *block = calloc(16,1);
 	char read_size;	
 	while ((read_size = fread(block, 1, 16, data)) > 0) {	
@@ -80,15 +86,3 @@ int main(int argc, char* argp[]){
 
 }
 
-unsigned char* generate_key(int byte_len) {
-
-	char *key = calloc(byte_len, 1);
-	
-	char i;
-	srand(time(NULL));
-	for (i = 0; i < byte_len; i++) {
-		char c = (rand() % 256);
-		key[i] = c;
-	}
-	return key;
-}
