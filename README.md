@@ -1,6 +1,6 @@
 # Task 1
 
-##Encrypt BMP Files using aes.
+## Encrypt BMP Files using aes.
 
 Build the file. 
 
