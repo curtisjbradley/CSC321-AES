@@ -15,5 +15,7 @@ cipher = AES.new(bytearray.fromhex(key), AES.MODE_CBC, bytearray.fromhex(iv))
 decrypted = str(cipher.decrypt(data))
 
 
+print(decrypted)
+
 print(";admin=true;" in decrypted)
 

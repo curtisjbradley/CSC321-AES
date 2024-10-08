@@ -19,3 +19,7 @@ Encrypt a message: Run ./submit < input
 ## Verify
 
 Verify the message: Run python3 verify.py < message
+
+## Bitflip 
+
+Can be seen by running flip.sh
